@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
@@ -28,8 +29,11 @@ class UserAdapter(private val context: Context, private val userList: ArrayList<
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context,ChatActivity::class.java)
-            intent.putExtra("name",user.username)
-            intent.putExtra("uid",user.uid)
+            val username = user.username
+            val uid = user.uid
+            intent.putExtra("name",username)
+            intent.putExtra("uid",uid)
+
             context.startActivity(intent)
         }
 
@@ -42,6 +46,5 @@ class UserAdapter(private val context: Context, private val userList: ArrayList<
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val username: TextView = itemView.findViewById<TextView>(R.id.txtUsername)
         val quote: TextView = itemView.findViewById<TextView>(R.id.txtQuote)
-//        val img: TextView = itemView.findViewById<TextView>(R.id.imgUser)
     }
 }

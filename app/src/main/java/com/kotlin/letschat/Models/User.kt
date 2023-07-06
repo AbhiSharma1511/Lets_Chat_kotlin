@@ -7,7 +7,6 @@ class User {
     var email:String?= null
     var uid: String?= null
     var quote: String?= null
-//    var img: Image? =  null
 
     constructor()
 

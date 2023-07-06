@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -32,7 +33,8 @@ class ChatActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
-        val intent = Intent()
+
+        val intent = intent
         val name = intent.getStringExtra("name")
         val receiverUid = intent.getStringExtra("uid")
 
@@ -40,7 +42,7 @@ class ChatActivity : AppCompatActivity() {
         mDbRef = FirebaseDatabase.getInstance().getReference()
 
         senderRoom = receiverUid+senderUid
-        senderRoom = senderUid+receiverUid
+        receiverRoom = senderUid+receiverUid
 
         supportActionBar?.title = name
 
@@ -57,6 +59,7 @@ class ChatActivity : AppCompatActivity() {
         imgSent.setOnClickListener{
             uploadChats(senderUid!!)
         }
+        loadChats()
     }
 
     fun uploadChats(senderUid:String){
@@ -75,13 +78,12 @@ class ChatActivity : AppCompatActivity() {
         mDbRef.child("Chats").child(senderRoom!!).child("messages")
             .addValueEventListener(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
-
                     messageList.clear()
-
                     for (postSnapshot in snapshot.children){
                         val message = postSnapshot.getValue(UserChat::class.java)
                         messageList.add(message!!)
                     }
+                    messageAdapter.notifyDataSetChanged()
 
                 }
 

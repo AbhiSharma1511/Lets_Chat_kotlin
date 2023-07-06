@@ -9,8 +9,10 @@ import android.view.MenuItem
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
-import android.widget.Toolbar
+
 import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -24,7 +26,7 @@ import com.kotlin.letschat.MenuActivity.ProfileActivity
 import com.kotlin.letschat.MenuActivity.SettingActivity
 import com.kotlin.letschat.Models.User
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
 
@@ -34,38 +36,28 @@ class MainActivity : ComponentActivity() {
     private lateinit var userList: ArrayList<User>
     private lateinit var adapter: UserAdapter
     private lateinit var dataRef: DatabaseReference
-    private lateinit var toolbar: Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        toolbar = findViewById(R.id.toolbar)
-
-//        setSupportActionBar(toolbar)
-
-//        supportActionBar?.title = baseContext
+        supportActionBar?.title = "Let's Chat"
 
         auth = FirebaseAuth.getInstance()
         dataRef = FirebaseDatabase.getInstance().getReference()
 
         recyclerView = findViewById(R.id.rv)
-        button = findViewById(R.id.button)
-
         userList = arrayListOf<User>()
 //        adapter = UserAdapter(this@MainActivity,userList)
         recyclerView.layoutManager = LinearLayoutManager(this)
 //        recyclerView.adapter = adapter
 
-        button.setOnClickListener {
-            auth.signOut()
-            val intent = Intent(this,LoginLayout::class.java)
-            startActivity(intent)
-            finish()
-        }
-//        showUserList()
+
+        /********************** showUserList() ***********************/
+
         dataRef.child("users").addValueEventListener(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
+                userList.clear()
                 for (postSnapshot in snapshot.children){
                     val user = postSnapshot.getValue(User::class.java)
                     if(user?.uid != auth.currentUser?.uid ){
@@ -81,6 +73,8 @@ class MainActivity : ComponentActivity() {
             }
         })
     }
+
+    /****************** Adding the custom menu in the main activity *******************/
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu1, menu)
@@ -101,6 +95,8 @@ class MainActivity : ComponentActivity() {
             }
             R.id.logoutMenu -> {
                 auth.signOut()
+                val intent = Intent(this,LoginLayout::class.java)
+                startActivity(intent)
                 true
             }
             else -> true
